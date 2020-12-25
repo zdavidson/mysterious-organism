@@ -1,4 +1,5 @@
-const uuidv5 = require("./node_modules/uuid/dist/v5");
+const uuidv = require("./node_modules/uuid/dist/v5");
+const uuidv5 = uuidv.default.DNS;
 
 // Returns a random DNA base
 const returnRandBase = () => {
@@ -15,42 +16,70 @@ const mockUpStrand = () => {
   return newStrand;
 };
 
-// Declaring empty specimen
-class SpecimenObject{};
 
 // Formula for creating new specimen
-const pAequorFactory = () => {
-  SpecimenObject.specimenNum = uuidv5.default.DNS;
-  SpecimenObject.dna = mockUpStrand();
-  return {SpecimenObject}
-}
+function pAequorFactory(specimenNum, dna) {
+  return {
+    specimenNum,
+    dna,
 
-// DNA mutate
-SpecimenObject.prototype.mutate = function() {
-  randomIndex = Math.floor(Math.random() * 14);
-  randomBase = returnRandBase();
+      mutate() {
+        randomIndex = Math.floor(Math.random() * 14);
+        randomBase = returnRandBase();
 
-  if (SpecimenObject.dna[randomIndex] !== randomBase) {
-    return SpecimenObject.dna[randomIndex] = randomBase;
-  } else {
-    newRandomBase = returnRandBase();
-    return SpecimenObject.dna[randomIndex] = newRandomBase;
+          if (specimenObject.dna[randomIndex] !== randomBase) {
+            return specimenObject.dna[randomIndex] = randomBase;
+          } else {
+            newRandomBase = returnRandBase();
+            return specimenObject.dna[randomIndex] = newRandomBase;
+          }
+      },
+
+      compareDNA(pAequorFactory) {
+        let total = 0;
+        for (let i = 0; i <= this.dna.length; i++) {
+          if (this.dna[i] === pAequorFactory.dna[i]) {
+              total++;
+          }
+      }
+      console.log(`The specimen have ${((total/15) * 100).toFixed(2)}% of their total DNA in common.`)
+    },
+
+      willLikelySurvive() {
+        total = 0;
+        for (let i = 0; i <= this.dna.length; i++) {
+          if (this.dna[i] === 'C' || this.dna[i] === 'G') {
+            total++;
+          }
+        }
+        if ((total/15) >= 0.6) {
+          return true;
+        } else {
+          return false;
+        }
+      }
   }
 }
 
-// DNA comparison
-SpecimenObject.prototype.compareDNA = function(pAequor) {
-  for (i = 0; i <= SpecimenObject.dna.length; i ++) {
-    if (SpecimenObject.dna[i] === pAequorFactory.SpecimenObject.dna)
-      return true;
- }
+//Creating first specimen
+const specimenObject = pAequorFactory(uuidv5, mockUpStrand());
+
+
+const massProduce = (num) => {
+  const specimens = [];
+  let specimensLeft = num - specimens.length;
+  
+  for (i = 0; specimens.length < num; i++) {
+    let newDna = pAequorFactory(i, mockUpStrand());
+    let survival = newDna.willLikelySurvive();
+    if (survival === true) {
+      specimens.push(newDna);
+    }
+  }
+  console.log(specimens);
+  console.log(specimens.length);
+  return specimens;
 }
 
-// Reassigning Object
-const newSpecimenObject = new SpecimenObject;
 
-
-// Function Calls
-pAequorFactory();
-newSpecimenObject.mutate();
-newSpecimenObject.compareDNA();
+massProduce(30);
